@@ -58,8 +58,20 @@ extension KeyedStyle {
         self.init(styleContainer: [key:style])
     }
     
+    public init<Key>(stylePairs: [(Key, StyleBlock)]) where Key: Hashable  {
+        self.init(styleContainer: Dictionary(uniqueKeysWithValues: stylePairs))
+    }
+    
+    public init<Key>(key: Key, _ style: @escaping StyleBlock) where Key: Hashable  {
+        self.init(styleContainer: [AnyHashable(key):style])
+    }
+    
     public static func newStyle(key: AnyHashable, _ style: @escaping StyleBlock) -> Self {
         self.init(key: key, style)
+    }
+    
+    public static func newStyle<Key>(key: Key, _ style: @escaping StyleBlock) -> Self where Key: Hashable {
+        self.init(key: AnyHashable(key), style)
     }
     
     public static func combine(policy: KeyedStyleMergePolicy<Self> = .first, _ styles: Self...)-> Self {
