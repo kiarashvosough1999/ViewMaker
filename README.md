@@ -22,7 +22,7 @@ CocoAttributedStringBuilder: Elegant and Easy AttributedStringBuilder in Swift
 
 - [x] Support Single Style For A View
 - [x] Support Multiple Styles For A View With Unique Key
-- [x] Combining Styles and Transforming Them To Aach Other
+- [x] Combining Styles and Transforming Them To Each Other
 - [x] Style propertWrapper To Keep the Styles On ViewController(Handy for Changing Theme)
 - [x] Follow A System Design For Creating Styles
 - [x] Open for Extension And New Implementation 
@@ -47,7 +47,7 @@ I have provided one sample project in the repository. To use it clone the repo, 
 
 Using ViewMaker has several steps to adopt the API.
 
-###Step One
+### Step One
 
 Create a factory class/struct which contains inner classes/structs which represent a nameSpace for the View to want to create style for. In each inner class/struct you can write methods/variables(getter) to return styles. These structure refers as AppStyle, where all of the styles gathered here.
 
@@ -56,9 +56,9 @@ Let's first get familiar with two type of Styles:
  - `KeyedViewStyle`: Use this style when you want to hold and apply several style on different conditions,Ex Here we defined a `ThemeTypes` so that we can use it to create a unique style for each of its cases.
 
 
- - `ViewStyle` : Use this style when your view just adopt one style once and for all, On this case you are responsible to change its style manually and apply another style on it (when it is needed). 
+ - `ViewStyle` : Use this style when your view just adopt one style once and for all, In this case you are responsible to change its style manually and apply another style on it (when it is needed). 
 
-Take a look at below implementation. First we defined a `ThemeTypes` which can be used when we use `KeyedViewStyle`
+Take a look at below implementation. First we defined a `ThemeTypes` which can become handy when we use `KeyedViewStyle` and changing theme
 
 ```swift
 
@@ -71,7 +71,18 @@ public struct AppStyle {
 
     public struct View {
     
-        typealias Stylable = UIView
+        typealias Stylable = UIButton
+
+        func passwordViewUltimate(radius: CGFloat) -> KeyedViewStyle<Stylable> {
+            KeyedViewStyle(key: .dark) { view in
+                view.backgroundColor = .red
+                view.layer.cornerRadius = radius
+            }
+            .combine(with: .light) { view in
+                view.backgroundColor = .blue
+                view.layer.cornerRadius = radius * 1.5
+            }
+        }
         
         func passwordView(radius: CGFloat) -> KeyedViewStyle<Stylable> {
             KeyedViewStyle(key: .dark) { view in
@@ -96,9 +107,86 @@ public struct AppStyle {
     }
 }
 ```
+### Step Two
+
+Create a factory class/struct which contains sevaral methods/variables(getter) which each of them return a `Holder` which later we can apply styles from matching `Namesapce` on them.
 
 
-2. Create a factory class/struct which contains sevaral methods/variables(getter) which each of them return a `Holder` which later we can apply styles from matching `Namesapce` on them.
+```swift
+
+struct ViewMaker {
+    
+    var button: RawViewHolder<UIButton> {
+        RawViewHolder(view: UIButton(type: .custom))
+    }
+
+    var controller: RawViewHolder<UIViewController> {
+        RawViewControllerHolder(view: UIViewController())
+    }
+}
+
+```
+
+### Step Three
+
+Let's build a componnent
+
+This is the simple usage of styling with `ViewStyle`.
+
+> When using `ViewStyle` the `with` method always returns the specified `View` unless you annotate variable with `@Styled`.
+
+
+```swift
+
+final class HomeController: UIViewController {
+    
+    private let viewMaker = ViewMaker()
+    
+    lazy var button: UIButton = viewMaker
+        .button
+        .with(style: AppStyle.Button().usernameStaticView)
+}
+
+
+```
+
+The more complex one is `KeyedStyle`, The three variable defined are the same but vary on implementation.
+
+> `@Styled` propertyWrapper is used to wrapp `StyledComponnent`, so that you can use its `projecetedValue` to access view directly. otherwise the view is accessible within `componnent` variable of `StyledComponnent`.
+
+> When using `KeyedStyle ` the `with` method always returns  `StyledComponnent`.
+
+
+
+```swift
+
+final class HomeController: UIViewController {
+    
+    private var viewMaker = ViewMaker()
+    
+    lazy var button: StyledComponnent<KeyedViewStyle<AppStyle.Button.Stylable>> = viewMaker
+        .button
+        .with(style: AppStyle.Button().passwordView(radius: 10))
+    
+    lazy var button2 = viewMaker
+        .button
+        .with(style: AppStyle.Button().passwordView(radius: 10))
+    
+    @Styled
+    var button3 = ViewMaker()
+        .button
+        .with(style: AppStyle.Button().passwordView(radius: 10))
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        button.componnent.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        button2.componnent.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        $button3.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    }
+}
+
+
+```
 
 
 
