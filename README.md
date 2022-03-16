@@ -74,18 +74,18 @@ public struct AppStyle {
         typealias Stylable = UIButton
 
         func passwordViewUltimate(radius: CGFloat) -> KeyedViewStyle<Stylable> {
-            KeyedViewStyle(key: .dark) { view in
+            KeyedViewStyle(key: ThemeTypes.dark) { view in
                 view.backgroundColor = .red
                 view.layer.cornerRadius = radius
             }
-            .combine(with: .light) { view in
+            .combine(with: ThemeTypes.light) { view in
                 view.backgroundColor = .blue
                 view.layer.cornerRadius = radius * 1.5
             }
         }
         
         func passwordView(radius: CGFloat) -> KeyedViewStyle<Stylable> {
-            KeyedViewStyle(key: .dark) { view in
+            KeyedViewStyle(key: ThemeTypes.dark) { view in
                 view.backgroundColor = .red
                 view.layer.cornerRadius = radius
             }
@@ -153,7 +153,6 @@ final class HomeController: UIViewController {
 The more complex one is `KeyedStyle`, The three variable defined are the same but vary on implementation.
 
 > `@Styled` propertyWrapper is used to wrapp `StyledComponnent`, so that you can use its `projecetedValue` to access view directly. otherwise the view is accessible within `componnent` variable of `StyledComponnent`.
-
 > When using `KeyedStyle` the `with` method always returns  `StyledComponnent`.
 
 
@@ -185,10 +184,47 @@ final class HomeController: UIViewController {
     }
 }
 
-
 ```
 
+### How To Change Theme
 
+You can change theme manualy for each `KeyedStyle`, but there is one easy way, Take advantage of `StyleChangable`. By conforming to this protocol you'll be able to use two method to change theme, but first it is required to make clear what kind of `KeyedStyle` type you are using.
+
+``` swift 
+class ViewController: UIViewController ,StyleChangable {
+    
+    typealias StyleType = KeyedViewStyle
+    
+    private var viewMaker = ViewMaker()
+    
+    lazy var button2 = viewMaker
+        .button
+        .with(style: AppStyle.Button().passwordView(radius: 10))
+    
+    @Styled
+    var button3 = ViewMaker()
+        .button
+        .with(style: AppStyle.Button().passwordView(radius: 10))
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            
+            // change all KeyedStyle componnent all in once
+            
+            self.changeStyle(with: ThemeTypes.dark)
+            
+            // or just the views you want to change with specific theme type
+            
+            self.changeStyle(with: [
+                "button3" : ThemeTypes.dark,
+                "button2" : ThemeTypes.darkBlue,
+            ])
+        }
+    }
+}
+
+```
 
 ## Contributors
 
