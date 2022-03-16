@@ -154,7 +154,7 @@ The more complex one is `KeyedStyle`, The three variable defined are the same bu
 
 > `@Styled` propertyWrapper is used to wrapp `StyledComponnent`, so that you can use its `projecetedValue` to access view directly. otherwise the view is accessible within `componnent` variable of `StyledComponnent`.
 
-> When using `KeyedStyle ` the `with` method always returns  `StyledComponnent`.
+> When using `KeyedStyle` the `with` method always returns  `StyledComponnent`.
 
 
 
