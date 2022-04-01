@@ -18,7 +18,6 @@ public enum KeyedStyleMergePolicy<Stylable: KeyedStyle> {
 
 public protocol KeyedStyle: Style where StyleContainer == [AnyHashable:StyleBlock] {
 
-
     static func combine(policy: KeyedStyleMergePolicy<Self>, _ styles: Self...)-> Self
     
     static func newStyle(key: AnyHashable, _ style: @escaping StyleBlock) -> Self
@@ -101,6 +100,10 @@ extension KeyedStyle {
     }
     
     public func set(just key: AnyHashable, on view: Stylable) {
+        precondition(container.keys.contains(key),
+        """
+        The provided key does not contained in container
+        """)
         container.forEach { if key == $0.key { $0.value(view) } }
     }
     

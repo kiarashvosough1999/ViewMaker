@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "viewmaker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kiarashvosough1999/ViewMaker",
+      "state" : {
+        "branch" : "master",
+        "revision" : "22f411627559f0764eee5f514042edaa2d07c5d2"
+      }
+    }
+  ],
+  "version" : 2
+}

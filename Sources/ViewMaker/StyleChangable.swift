@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol StyleChangable {
+public protocol StyleChangable {
     
     associatedtype StyleType: Style
     
@@ -16,7 +16,7 @@ protocol StyleChangable {
     func changeStyle<Key: Hashable>(with map: [String:[Key]])
 }
 
-extension StyleChangable where StyleType: KeyedStyle {
+public extension StyleChangable where StyleType: KeyedStyle {
     
     func changeStyle<Key: Hashable>(with key: Key) {
         let mir = Mirror(reflecting: self)
