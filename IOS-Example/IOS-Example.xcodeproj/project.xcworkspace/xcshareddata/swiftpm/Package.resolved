@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kiarashvosough1999/ViewMaker",
       "state" : {
-        "branch" : "master",
-        "revision" : "22f411627559f0764eee5f514042edaa2d07c5d2"
+        "branch" : "add-pre-check-for-keys",
+        "revision" : "2fa09761a4aa06525d8b87bf4baef9ffbda6d6c8"
       }
     }
   ],
